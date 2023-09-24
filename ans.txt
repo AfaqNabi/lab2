@@ -1,0 +1,7 @@
+Q1: by specifying socket.SOCK_STREAM in the socket.socket() method
+Q2: client init conn and server listen for conn
+Q3: use setSocketOpt() and set the SO_REUSEADDR to 1 setting in setsocketopt() 
+Q4: incoming connections tell us client ip and port 
+Q5: the server send a null char to indicate end of data stream
+Q6: 
+
