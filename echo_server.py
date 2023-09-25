@@ -57,3 +57,7 @@ def main():
         print('Done sending')
         c.send(b'Thank you for connecting')
         c.close()
+
+
+start_server()
+# main()

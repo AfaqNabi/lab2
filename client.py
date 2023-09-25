@@ -18,4 +18,4 @@ def get(host, port):
 
 
 # get('www.google.com', 80)
-get('loaclhost', 8888)
+get('127.0.0.1', 8888)
