@@ -1,63 +1,35 @@
+#!/usr/bin/env python3
 import socket
+import time
 
-HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
-PORT = 8888        # Port to listen on (non-privileged ports are > 1023)
-BYTES_TO_RECEIVE = 4096
-
-
-def start_server():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind((HOST, PORT))
-        s.listen()
-        conn, addr = s.accept()
-        handle_connection(conn, addr)
-
-
-def handle_connection(conn, addr):
-    with conn:
-        print('Connected by', addr)
-        while True:
-            data = conn.recv(BYTES_TO_RECEIVE)
-            if not data:
-                break
-            print('Received', repr(data))
-            conn.sendall(data)
+# define address & buffer size
+HOST = ""
+PORT = 8001
+BUFFER_SIZE = 1024
 
 
 def main():
-    # Create a socket object
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
-    # Get local machine name
-    host = socket.gethostname()
-    port = 9999
+        # QUESTION 3
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-    # Bind to the port
-    s.bind((host, port))
+        # bind socket to address
+        s.bind((HOST, PORT))
+        # set to listening mode
+        s.listen(2)
 
-    # Now wait for client connection.
-    s.listen(5)
+        # continuously listen for connections
+        while True:
+            conn, addr = s.accept()
+            print("Connected by", addr)
 
-    while True:
-        # Establish connection with client.
-        c, addr = s.accept()
-        print('Got connection from', addr)
-        data = c.recv(BYTES_TO_RECEIVE)
-        print('Server received', repr(data))
-
-        filename = 'mytext.txt'
-        f = open(filename, 'rb')
-        l = f.read(BYTES_TO_RECEIVE)
-        while (l):
-            c.send(l)
-            print('Sent', repr(l))
-            l = f.read(BYTES_TO_RECEIVE)
-        f.close()
-
-        print('Done sending')
-        c.send(b'Thank you for connecting')
-        c.close()
+            # recieve data, wait a bit, then send it back
+            full_data = conn.recv(BUFFER_SIZE)
+            time.sleep(0.5)
+            conn.sendall(full_data)
+            conn.close()
 
 
-start_server()
-# main()
+if __name__ == "__main__":
+    main()
